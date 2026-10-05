@@ -1,0 +1,17 @@
+[
+  {
+    "id": "EST-0001",
+    "fecha": "2026-10-05",
+    "orden": 1,
+    "pregunta": "De este estadio dicen que no tiembla: late, cuando salta la hinchada…",
+    "lugar": "La Bombonera, Buenos Aires, Argentina",
+    "lat": -34.6355,
+    "lng": -58.3647,
+    "pais": "AR",
+    "deporte": "fútbol",
+    "dificultad": 2,
+    "historia": "La Bombonera, en La Boca, es la cancha de Boca Juniors. La hinchada dice que no tiembla: late.",
+    "fuente": "https://www.wikidata.org/wiki/Q275701",
+    "verificada": true
+  }
+]
