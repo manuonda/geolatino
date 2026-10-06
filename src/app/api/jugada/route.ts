@@ -1,12 +1,19 @@
 import { distanceKm } from "@/lib/haversine";
 import { signProof } from "@/lib/proof";
 import { getQuestionById } from "@/lib/questions";
-import { applyMultiplier, chipColor, rawScoreFromDistanceKm } from "@/lib/score";
+import {
+  applyHints,
+  applyMultiplier,
+  chipColor,
+  MAX_HINTS,
+  rawScoreFromDistanceKm,
+} from "@/lib/score";
 import { todayInBuenosAires } from "@/lib/timezone";
 
 type GuessBody = {
   questionId?: string;
   guess?: { lat?: number; lng?: number };
+  hintsUsed?: number;
 };
 
 export async function POST(request: Request) {
@@ -14,6 +21,7 @@ export async function POST(request: Request) {
   const questionId = body.questionId;
   const lat = body.guess?.lat;
   const lng = body.guess?.lng;
+  const hintsUsed = body.hintsUsed ?? 0;
 
   if (!questionId || lat == null || lng == null) {
     return Response.json({ error: "questionId y guess son requeridos" }, { status: 400 });
@@ -26,7 +34,8 @@ export async function POST(request: Request) {
 
   const guess = { lat, lng };
   const km = distanceKm(guess, { lat: question.lat, lng: question.lng });
-  const rawScore = rawScoreFromDistanceKm(km);
+  const rawBeforeHints = rawScoreFromDistanceKm(km);
+  const rawScore = applyHints(rawBeforeHints, hintsUsed);
   const { multiplier, score } = applyMultiplier(rawScore, question.orden);
   const date = todayInBuenosAires();
 
@@ -41,6 +50,7 @@ export async function POST(request: Request) {
     },
     distanceKm: Math.round(km * 10) / 10,
     rawScore,
+    hintsUsed: Math.min(MAX_HINTS, Math.max(0, Math.round(hintsUsed))),
     multiplier,
     score,
     chip: chipColor(rawScore),

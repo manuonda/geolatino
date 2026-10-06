@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# MapLibre workers copied by scripts/copy-maplibre-worker.mjs
+/public/maplibre/
+
 # production
 /build
 

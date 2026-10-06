@@ -18,6 +18,7 @@ export function toPublicQuestion(question: Question): PublicQuestion {
     pregunta: question.pregunta,
     deporte: question.deporte,
     dificultad: question.dificultad,
+    pistas: (question.pistas ?? []).slice(0, 3),
   };
 }
 
@@ -25,5 +26,7 @@ export function getPublicRound(date: string): PublicQuestion[] {
   const assigned = bank.filter((question) => question.fecha === date);
   const source = assigned.length > 0 ? assigned : bank.slice(0, 5);
 
-  return source.map(toPublicQuestion);
+  return [...source]
+    .sort((a, b) => a.orden - b.orden)
+    .map(toPublicQuestion);
 }

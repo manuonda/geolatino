@@ -21,6 +21,19 @@ export function chipColor(rawScore: number): ChipColor {
   return "red";
 }
 
+export const HINT_PENALTY = 15;
+export const MAX_HINTS = 3;
+
+export function applyHints(rawScore: number, hintsUsed: number): number {
+  const used = Math.min(MAX_HINTS, Math.max(0, Math.round(hintsUsed)));
+  return Math.min(100, Math.max(0, rawScore - used * HINT_PENALTY));
+}
+
+export function stakeForQuestion(questionOrder: 1 | 2 | 3 | 4 | 5) {
+  const multiplier = MULTIPLIERS[questionOrder - 1];
+  return { multiplier, maxPoints: 100 * multiplier };
+}
+
 export function applyMultiplier(rawScore: number, questionOrder: 1 | 2 | 3 | 4 | 5) {
   const multiplier = MULTIPLIERS[questionOrder - 1];
   return { multiplier, score: rawScore * multiplier };

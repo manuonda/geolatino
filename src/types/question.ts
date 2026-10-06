@@ -11,6 +11,7 @@ export type Question = {
   pais: string;
   deporte: string;
   dificultad: 1 | 2 | 3 | 4 | 5;
+  pistas: string[];
   historia: string;
   fuente: string;
   verificada: boolean;
@@ -19,5 +20,5 @@ export type Question = {
 /** Lo que el navegador puede ver antes del toque: sin coordenadas ni nombre del lugar. */
 export type PublicQuestion = Pick<
   Question,
-  "id" | "orden" | "pregunta" | "deporte" | "dificultad"
+  "id" | "orden" | "pregunta" | "deporte" | "dificultad" | "pistas"
 >;

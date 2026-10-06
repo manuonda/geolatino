@@ -10,8 +10,93 @@
     "pais": "AR",
     "deporte": "fútbol",
     "dificultad": 2,
-    "historia": "La Bombonera, en La Boca, es la cancha de Boca Juniors. La hinchada dice que no tiembla: late.",
+    "pistas": [
+      "Está en el Cono Sur, pegado a un río.",
+      "El barrio es portuario y el club viste azul y oro.",
+      "La hinchada jura que la cancha tiene corazón."
+    ],
+    "historia": "Se le dice Bombonera porque el estadio de Boca, en La Boca, es chico, alto y cerrado, como una caja de bombones: cuando la gente salta, el hormigón parece latir.",
     "fuente": "https://www.wikidata.org/wiki/Q275701",
+    "verificada": true
+  },
+  {
+    "id": "EST-0002",
+    "fecha": "2026-10-05",
+    "orden": 2,
+    "pregunta": "Acá un país entero se puso a llorar y a cantar el mismo día: nació un maraca… y un mito.",
+    "lugar": "Estádio do Maracanã, Río de Janeiro, Brasil",
+    "lat": -22.9121,
+    "lng": -43.2302,
+    "pais": "BR",
+    "deporte": "fútbol",
+    "dificultad": 2,
+    "pistas": [
+      "Queda en la costa atlántica de un gigante de Sudamérica.",
+      "La ciudad es famosa por el Cristo y el carnaval.",
+      "En 1950 casi 200 mil almas vieron perder una final en casa."
+    ],
+    "historia": "Se le dice Maracanã por el río que pasa cerca. El estadio se volvió leyenda en el Mundial de 1950: el Maracanaço, cuando Uruguay le ganó a Brasil en su propia fiesta.",
+    "fuente": "https://www.wikidata.org/wiki/Q186917",
+    "verificada": true
+  },
+  {
+    "id": "EST-0003",
+    "fecha": "2026-10-05",
+    "orden": 3,
+    "pregunta": "Dicen que acá el césped vio dos coronas del mundo… y que el volcán, a lo lejos, también miraba.",
+    "lugar": "Estadio Azteca, Ciudad de México, México",
+    "lat": 19.3029,
+    "lng": -99.1505,
+    "pais": "MX",
+    "deporte": "fútbol",
+    "dificultad": 3,
+    "pistas": [
+      "Está en Norteamérica, a más de 2.000 metros de altura.",
+      "La ciudad es una de las más grandes del continente.",
+      "Pelé y Maradona levantaron Copa del Mundo en esta misma cancha."
+    ],
+    "historia": "Se le dice Azteca en homenaje a la cultura del valle. Es el único estadio que albergó dos finales de Mundial: 1970 y 1986. Por eso las leyendas del fútbol latinoamericano parecen vivir en esa altura.",
+    "fuente": "https://www.wikidata.org/wiki/Q186287",
+    "verificada": true
+  },
+  {
+    "id": "EST-0004",
+    "fecha": "2026-10-05",
+    "orden": 4,
+    "pregunta": "En 1930, el fútbol eligió un templo nuevo para coronar al primer campeón del mundo.",
+    "lugar": "Estadio Centenario, Montevideo, Uruguay",
+    "lat": -34.8945,
+    "lng": -56.1528,
+    "pais": "UY",
+    "deporte": "fútbol",
+    "dificultad": 3,
+    "pistas": [
+      "El país es chico, está entre dos gigantes y mira al Río de la Plata.",
+      "La capital cabe en una bahía y huele a fútbol de barrio.",
+      "FIFA lo llama Monumento Histórico del Fútbol Mundial."
+    ],
+    "historia": "Se le dice Centenario porque se inauguró a 100 años de la jura de la Constitución uruguaya. Ahí se jugó la final del primer Mundial: Uruguay 4, Argentina 2. Por eso lo tratan como el templo donde nació la Copa.",
+    "fuente": "https://www.wikidata.org/wiki/Q744417",
+    "verificada": true
+  },
+  {
+    "id": "EST-0005",
+    "fecha": "2026-10-05",
+    "orden": 5,
+    "pregunta": "Dicen que acá el fútbol colombiano tiene casa grande, a 2.600 metros, y que el barrio se llama El Campín.",
+    "lugar": "Estadio Nemesio Camacho El Campín, Bogotá, Colombia",
+    "lat": 4.6459,
+    "lng": -74.0774,
+    "pais": "CO",
+    "deporte": "fútbol",
+    "dificultad": 4,
+    "pistas": [
+      "Está en la cordillera, en un país que mira al Caribe y al Pacífico.",
+      "La capital es alta, fría y llena de buses rojos.",
+      "Ahí juegan Millonarios y Santa Fe, y la Selección también ha hecho fiesta."
+    ],
+    "historia": "Se le dice El Campín porque el predio era un campo abierto al norte de Bogotá. El nombre oficial honra a Nemesio Camacho, pero la gente se quedó con el apodo del potrero: la casa alta del fútbol colombiano.",
+    "fuente": "https://www.wikidata.org/wiki/Q1130012",
     "verificada": true
   }
 ]

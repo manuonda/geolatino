@@ -16,14 +16,17 @@ export default function OpenGraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           color: "#E4B44C",
-          fontSize: 72,
-          fontWeight: 700,
+          border: "16px solid #E4B44C",
         }}
       >
-        GeoLatino
+        <div style={{ fontSize: 88, fontWeight: 700 }}>GeoLatino</div>
+        <div style={{ fontSize: 32, color: "#F4EBD0", marginTop: 16 }}>
+          Tocá en el mapa dónde pasó
+        </div>
       </div>
     ),
     { ...size },

@@ -1,7 +1,5 @@
+import { RoundRecapView } from "@/features/results/components/RoundRecapView";
+
 export default function ResultadosPage() {
-  return (
-    <>
-      <h1>Resultados</h1>
-    </>
-  );
+  return <RoundRecapView />;
 }

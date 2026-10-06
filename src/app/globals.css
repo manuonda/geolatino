@@ -1,26 +1,98 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root,
+[data-theme="deporte"] {
+  --background: #07161a;
+  --foreground: #f4ebd0;
+  --gl-night: #07161a;
+  --gl-pitch: #0b2e22;
+  --gl-gold: #e4b44c;
+  --gl-cream: #f4ebd0;
+  --gl-card: #e23d3d;
+  --gl-chip-green: #3d8b4a;
+  --gl-chip-yellow: #e4b44c;
+  --gl-ocean: #0a3a42;
+  --gl-land: #2f6b3a;
+}
+
+/* Mundos futuros (Monopoly / Mario): cambiar data-theme en <html> */
+[data-theme="historia"] {
+  --background: #1a140c;
+  --foreground: #f3e6c8;
+  --gl-night: #1a140c;
+  --gl-pitch: #3a2a18;
+  --gl-gold: #c4a574;
+  --gl-cream: #f3e6c8;
+  --gl-card: #a33b2b;
+  --gl-chip-green: #4a6b3a;
+  --gl-chip-yellow: #c4a574;
+}
+
+[data-theme="cultura"] {
+  --background: #12081c;
+  --foreground: #f4e8ff;
+  --gl-night: #12081c;
+  --gl-pitch: #2a1040;
+  --gl-gold: #e8b4ff;
+  --gl-cream: #f4e8ff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-night: var(--gl-night);
+  --color-pitch: var(--gl-pitch);
+  --color-gold: var(--gl-gold);
+  --color-cream: var(--gl-cream);
+  --color-card: var(--gl-card);
+  --color-chip-green: var(--gl-chip-green);
+  --color-chip-yellow: var(--gl-chip-yellow);
+  --color-ocean: var(--gl-ocean);
+  --color-land: var(--gl-land);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-pixelify);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.pixel-grid {
+  background-image:
+    linear-gradient(to right, rgb(228 180 76 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(228 180 76 / 0.07) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+.block-shadow {
+  box-shadow: 4px 4px 0 #03110f;
+}
+
+@keyframes puppin-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+.puppin-bob {
+  animation: puppin-bob 1.5s ease-in-out infinite;
+}
+
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+  background: rgb(7 22 26 / 0.85) !important;
+  color: #f4ebd0;
+}
+
+.maplibregl-ctrl-bottom-left .maplibregl-ctrl:not(.maplibregl-ctrl-attrib),
+.maplibregl-ctrl-top-right,
+.maplibregl-ctrl-globe,
+.maplibregl-ctrl-compass {
+  display: none;
 }
