@@ -8,6 +8,8 @@ export type PlayResult = {
   multiplier: number;
   score: number;
   chip: "green" | "yellow" | "red";
+  /** True si la jugada quedó guardada y cuenta para el ranking. */
+  persisted: boolean;
   proof: string;
 };
 

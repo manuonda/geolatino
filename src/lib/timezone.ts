@@ -10,3 +10,10 @@ export function todayInBuenosAires(now = new Date()): string {
     day: "2-digit",
   }).format(now);
 }
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** Fecha de la ronda anterior. Argentina no tiene horario de verano: restar 24 h alcanza. */
+export function yesterdayInBuenosAires(now = new Date()): string {
+  return todayInBuenosAires(new Date(now.getTime() - DAY_MS));
+}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SessionStatus } from "@/features/auth/components/SessionStatus";
 import GlobeMap from "@/features/round/components/GlobeMap";
 import {
   blockButtonClass,
@@ -7,7 +8,9 @@ import {
 import { GameMenu } from "@/shared/components/GameMenu";
 import { Logo } from "@/shared/components/Logo";
 
-export default function HomePage() {
+export default async function HomePage({ searchParams }: PageProps<"/">) {
+  const loginFailed = (await searchParams).error === "login";
+
   return (
     <main className="relative flex min-h-dvh flex-col overflow-hidden">
       <GlobeMap className="absolute inset-0" />
@@ -33,6 +36,12 @@ export default function HomePage() {
           >
             Jugar la ronda de hoy
           </Link>
+          <SessionStatus />
+          {loginFailed ? (
+            <p role="alert" className="text-center font-sans text-sm text-cream">
+              No se pudo iniciar sesión. Probá de nuevo.
+            </p>
+          ) : null}
           <Link
             href="/puntaje"
             className="font-display text-base text-gold underline decoration-2 underline-offset-4"

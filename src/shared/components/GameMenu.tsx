@@ -62,6 +62,13 @@ export function GameMenu({ compact = false }: GameMenuProps) {
               >
                 Resultados
               </Link>
+              <Link
+                href="/ranking"
+                className={`${blockButtonClass} ${blockButtonVariants.ghost} w-full`}
+                onClick={() => setOpen(false)}
+              >
+                Ranking de hoy
+              </Link>
               <p className="pt-2 font-display text-sm tracking-wider text-gold/80">
                 MUNDOS
               </p>

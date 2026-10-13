@@ -50,6 +50,7 @@ export function RoundRecapView() {
   }
 
   const dateLabel = formatDate(recap.date);
+  const inRanking = recap.plays.some((play) => play.persisted);
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-8 px-5 py-10">
@@ -88,6 +89,26 @@ export function RoundRecapView() {
       </section>
 
       <ShareButton score={recap.totalScore} dateLabel={dateLabel} />
+
+      {inRanking ? null : (
+        <p className="text-center font-sans text-sm text-cream/80">
+          Esta ronda no entró al ranking porque jugaste sin sesión.{" "}
+          <a
+            href="/auth/login?next=/ranking"
+            className="text-gold underline decoration-2 underline-offset-4"
+          >
+            Entrá con Google
+          </a>{" "}
+          para competir en la próxima.
+        </p>
+      )}
+
+      <Link
+        href="/ranking"
+        className="text-center font-display text-base text-gold underline decoration-2 underline-offset-4"
+      >
+        Ver ranking
+      </Link>
 
       <Link
         href="/"

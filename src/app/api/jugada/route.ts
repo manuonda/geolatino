@@ -1,6 +1,7 @@
 import { distanceKm } from "@/lib/haversine";
+import { saveFirstPlay } from "@/lib/plays";
 import { signProof } from "@/lib/proof";
-import { getQuestionById } from "@/lib/questions";
+import { findRoundDate, getQuestionById } from "@/lib/questions";
 import {
   applyHints,
   applyMultiplier,
@@ -8,57 +9,93 @@ import {
   MAX_HINTS,
   rawScoreFromDistanceKm,
 } from "@/lib/score";
-import { todayInBuenosAires } from "@/lib/timezone";
+import { getSessionUserId } from "@/lib/supabase/server";
+import { todayInBuenosAires, yesterdayInBuenosAires } from "@/lib/timezone";
 
 type GuessBody = {
-  questionId?: string;
-  guess?: { lat?: number; lng?: number };
-  hintsUsed?: number;
+  questionId?: unknown;
+  guess?: { lat?: unknown; lng?: unknown };
+  hintsUsed?: unknown;
 };
 
+function isCoordinate(value: unknown, limit: number): value is number {
+  return typeof value === "number" && Number.isFinite(value) && Math.abs(value) <= limit;
+}
+
+function clampHints(value: unknown): number {
+  const hints = typeof value === "number" && Number.isFinite(value) ? Math.round(value) : 0;
+  return Math.min(MAX_HINTS, Math.max(0, hints));
+}
+
 export async function POST(request: Request) {
-  const body = (await request.json()) as GuessBody;
+  let body: GuessBody;
+  try {
+    body = (await request.json()) as GuessBody;
+  } catch {
+    return Response.json({ error: "El cuerpo no es JSON válido" }, { status: 400 });
+  }
+
   const questionId = body.questionId;
   const lat = body.guess?.lat;
   const lng = body.guess?.lng;
-  const hintsUsed = body.hintsUsed ?? 0;
 
-  if (!questionId || lat == null || lng == null) {
+  if (typeof questionId !== "string" || !isCoordinate(lat, 90) || !isCoordinate(lng, 180)) {
     return Response.json({ error: "questionId y guess son requeridos" }, { status: 400 });
   }
 
-  const question = getQuestionById(questionId);
-  if (!question) {
+  // Se acepta la ronda de ayer: una ronda empezada a las 23:58 termina después de medianoche.
+  const date = findRoundDate(questionId, [todayInBuenosAires(), yesterdayInBuenosAires()]);
+  const question = date ? getQuestionById(questionId) : undefined;
+  if (!date || !question) {
     return Response.json({ error: "Pregunta no encontrada" }, { status: 404 });
   }
 
-  const guess = { lat, lng };
-  const km = distanceKm(guess, { lat: question.lat, lng: question.lng });
-  const rawBeforeHints = rawScoreFromDistanceKm(km);
-  const rawScore = applyHints(rawBeforeHints, hintsUsed);
-  const { multiplier, score } = applyMultiplier(rawScore, question.orden);
-  const date = todayInBuenosAires();
+  const hintsUsed = clampHints(body.hintsUsed);
+  const km = distanceKm({ lat, lng }, { lat: question.lat, lng: question.lng });
+  const computed = {
+    guess: { lat, lng },
+    distanceKm: Math.round(km * 10) / 10,
+    hintsUsed,
+    rawScore: applyHints(rawScoreFromDistanceKm(km), hintsUsed),
+  };
+  const computedScore = applyMultiplier(computed.rawScore, question.orden).score;
+
+  // Con sesión cuenta solo el primer intento: si ya había jugada, se responde con la guardada.
+  const playerId = await getSessionUserId();
+  const stored = playerId
+    ? await saveFirstPlay({
+        playerId,
+        roundDate: date,
+        questionId: question.id,
+        ...computed,
+        score: computedScore,
+      })
+    : null;
+
+  const play = stored ?? { ...computed, score: computedScore };
+  const { multiplier } = applyMultiplier(play.rawScore, question.orden);
 
   return Response.json({
     questionId: question.id,
-    guess,
+    guess: play.guess,
     answer: {
       lat: question.lat,
       lng: question.lng,
       name: question.lugar,
       story: question.historia,
     },
-    distanceKm: Math.round(km * 10) / 10,
-    rawScore,
-    hintsUsed: Math.min(MAX_HINTS, Math.max(0, Math.round(hintsUsed))),
+    distanceKm: play.distanceKm,
+    rawScore: play.rawScore,
+    hintsUsed: play.hintsUsed,
     multiplier,
-    score,
-    chip: chipColor(rawScore),
+    score: play.score,
+    chip: chipColor(play.rawScore),
+    persisted: stored !== null,
     proof: signProof({
       date,
       questionId: question.id,
-      guess,
-      score,
+      guess: play.guess,
+      score: play.score,
       anonymousId: "anon",
       expiresAt: date,
     }),

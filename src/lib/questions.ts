@@ -22,6 +22,15 @@ export function toPublicQuestion(question: Question): PublicQuestion {
   };
 }
 
+/** Primera de las fechas cuya ronda incluye la pregunta, o null si no está en ninguna. */
+export function findRoundDate(questionId: string, dates: string[]): string | null {
+  return (
+    dates.find((date) =>
+      getPublicRound(date).some((question) => question.id === questionId),
+    ) ?? null
+  );
+}
+
 export function getPublicRound(date: string): PublicQuestion[] {
   const assigned = bank.filter((question) => question.fecha === date);
   const source = assigned.length > 0 ? assigned : bank.slice(0, 5);
