@@ -10,8 +10,6 @@ import {
   setWorkerUrl,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { COUNTRY_LABELS_GEOJSON } from "@/features/round/data/countryLabels";
-
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const LATAM_CENTER: [number, number] = [-64, -15];
@@ -232,7 +230,7 @@ function hideBaseLabels(map: MapLibreMap) {
 function addCountryLabels(map: MapLibreMap) {
   if (map.getSource("country-labels")) return;
 
-  map.addSource("country-labels", { type: "geojson", data: COUNTRY_LABELS_GEOJSON });
+  map.addSource("country-labels", { type: "geojson", data: "/geo/country-labels.json" });
 
   const code: ExpressionSpecification = ["get", "code"];
   const nameWithCode: ExpressionSpecification = [
@@ -263,7 +261,7 @@ function addCountryLabels(map: MapLibreMap) {
       "text-padding": 1,
       "text-variable-anchor": ["center", "top", "bottom", "left", "right"],
       "text-radial-offset": 0.4,
-      "symbol-sort-key": ["case", ["get", "small"], 1, 0],
+      "symbol-sort-key": ["get", "priority"],
     },
     paint: {
       "text-color": "#1c1410",
