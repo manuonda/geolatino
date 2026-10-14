@@ -101,7 +101,7 @@ export function HintChat({ hints, hintsUsed, canAsk, onAsk }: HintChatProps) {
             </span>
           )}
         </button>
-        <p className="mt-1 text-center font-display text-[10px] leading-none text-gold">
+        <p className="mt-1 text-center font-hud text-[10px] font-bold leading-none tracking-wider text-gold">
           Puppin
         </p>
       </div>

@@ -51,6 +51,8 @@
   --color-land: var(--gl-land);
   --font-sans: var(--font-dm-sans);
   --font-display: var(--font-pixelify);
+  /* Pixelify confunde 5 con S en tamaños chicos: números y rótulos del HUD van en mono. */
+  --font-hud: var(--font-jetbrains);
 }
 
 body {

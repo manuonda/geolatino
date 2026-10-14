@@ -3,16 +3,15 @@ export const MULTIPLIERS = [1, 1, 2, 3, 3] as const;
 
 export type ChipColor = "green" | "yellow" | "red";
 
-/**
- * Curva del spec (a calibrar):
- * puntos = min(100, max(0, 177 - 19.7 * ln(d_km)))
- */
-export function rawScoreFromDistanceKm(distanceKm: number): number {
-  if (distanceKm <= 5) return 100;
-  if (distanceKm >= 8000) return 0;
+/** Hasta esta distancia la respuesta cuenta como acierto pleno. */
+export const PERFECT_RADIUS_KM = 50;
+/** Cada esta cantidad de km de error más allá del radio perfecto, los puntos se reducen a la mitad. */
+export const HALF_LIFE_KM = 700;
 
-  const score = 177 - 19.7 * Math.log(distanceKm);
-  return Math.min(100, Math.max(0, Math.round(score)));
+/** Decaimiento exponencial: puntos = 100 × 0,5^((km − 50) / 700). */
+export function rawScoreFromDistanceKm(distanceKm: number): number {
+  const extraKm = Math.max(0, distanceKm - PERFECT_RADIUS_KM);
+  return Math.round(100 * 0.5 ** (extraKm / HALF_LIFE_KM));
 }
 
 export function chipColor(rawScore: number): ChipColor {

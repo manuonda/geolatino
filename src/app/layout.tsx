@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import { DM_Sans, Pixelify_Sans } from "next/font/google";
+import { DM_Sans, JetBrains_Mono, Pixelify_Sans } from "next/font/google";
 import "./globals.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
+  subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
 });
 
@@ -22,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="es"
       data-theme="deporte"
-      className={`${dmSans.variable} ${pixelify.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${jetbrainsMono.variable} ${pixelify.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-night text-cream font-sans">
         {children}

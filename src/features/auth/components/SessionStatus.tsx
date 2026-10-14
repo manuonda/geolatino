@@ -6,7 +6,7 @@ type SessionStatusProps = {
 };
 
 const linkClass =
-  "font-display text-base text-gold underline decoration-2 underline-offset-4";
+  "font-sans text-sm font-semibold text-gold underline decoration-2 underline-offset-4";
 
 export async function SessionStatus({ next = "/" }: SessionStatusProps) {
   const player = await getCurrentPlayer();
@@ -24,7 +24,7 @@ export async function SessionStatus({ next = "/" }: SessionStatusProps) {
     <form
       action="/auth/logout"
       method="post"
-      className="flex items-center gap-3 font-sans text-base text-cream/90"
+      className="flex items-center gap-3 font-sans text-sm text-cream/90"
     >
       <span>Jugás como {player.displayName}</span>
       <button type="submit" className={`${linkClass} cursor-pointer`}>

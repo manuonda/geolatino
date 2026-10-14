@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import GlobeMap from "@/features/round/components/GlobeMap";
 import { PlayHud } from "@/features/round/components/PlayHud";
+import { GameShell } from "@/shared/components/GameShell";
 import {
   submitGuess,
   type PlayResult,
@@ -83,7 +84,7 @@ export function PlayRound({ questions }: PlayRoundProps) {
   }
 
   return (
-    <main className="relative h-dvh overflow-hidden bg-night">
+    <GameShell className="h-dvh overflow-hidden">
       <GlobeMap
         className="absolute inset-0 h-full w-full"
         allowGuess={!validating && !result}
@@ -110,6 +111,6 @@ export function PlayRound({ questions }: PlayRoundProps) {
         onValidate={() => void validate()}
         onNext={goNext}
       />
-    </main>
+    </GameShell>
   );
 }

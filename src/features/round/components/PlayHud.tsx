@@ -3,7 +3,7 @@
 import { HintChat } from "@/features/round/components/HintChat";
 import { RevealCard } from "@/features/reveal/components/RevealCard";
 import { Button } from "@/shared/components/Button";
-import { GameMenu } from "@/shared/components/GameMenu";
+import { GameTopBar } from "@/shared/components/GameMenu";
 import { MAX_HINTS, stakeForQuestion } from "@/lib/score";
 import type { PlayResult } from "@/features/round/services/roundService";
 
@@ -43,30 +43,50 @@ export function PlayHud({
   const availableHints = (hints ?? []).slice(0, MAX_HINTS);
   const canAskHint = !result && hintsUsed < availableHints.length && !validating;
   const isLast = questionIndex >= questionTotal;
+  const answered = questionIndex - 1 + (result ? 1 : 0);
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex flex-col">
-      <header className="pointer-events-auto mx-auto w-full max-w-2xl space-y-2 p-3 sm:p-4">
-        <div className="flex items-stretch gap-2">
-          <GameMenu compact />
-          <div className="flex min-w-[5.5rem] flex-col items-center justify-center border-[3px] border-gold bg-night px-3 py-1 text-gold block-shadow">
-            <span className="font-sans text-[10px] font-bold tracking-[0.2em]">SCORE</span>
-            <span className="font-display text-3xl leading-none tabular-nums">{score}</span>
+      <header className="pointer-events-auto w-full space-y-2 p-2 sm:p-3">
+        <GameTopBar />
+        <div className="flex items-stretch gap-2 border-[3px] border-gold bg-night/95 p-2 block-shadow">
+          <div className="flex min-w-[4.75rem] flex-col items-center justify-center border-[3px] border-gold/80 px-2 py-1 text-gold">
+            <span className="font-hud text-[10px] font-bold tracking-[0.25em]">SCORE</span>
+            <span className="font-hud text-2xl font-extrabold leading-none tabular-nums">
+              {String(score).padStart(3, "0")}
+            </span>
           </div>
-          <div className="flex min-w-0 flex-1 flex-col justify-center border-[3px] border-gold/70 bg-pitch px-3 py-2 text-cream block-shadow">
-            <p className="font-sans text-base font-semibold tabular-nums text-gold">
-              {questionIndex}/{questionTotal}
-              <span className="ml-2 font-medium text-cream">esta vale ×{stake.multiplier}</span>
-            </p>
-            <p className="truncate font-sans text-xs text-cream/80">
-              Hasta {stake.maxPoints} pts
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5">
+            <div className="flex items-center gap-2 bg-gold px-2 py-1 font-hud text-[11px] font-bold tabular-nums text-night">
+              <span className="whitespace-nowrap">
+                PREGUNTA {questionIndex} DE {questionTotal}
+              </span>
+              <ol
+                aria-label={`${answered} de ${questionTotal} respondidas`}
+                className="flex flex-1 gap-1"
+              >
+                {Array.from({ length: questionTotal }, (_, step) => (
+                  <li
+                    key={step}
+                    className={`h-2 flex-1 border-[2px] border-night ${
+                      step < answered
+                        ? "bg-night"
+                        : step === questionIndex - 1
+                          ? "bg-night/35"
+                          : "bg-gold"
+                    }`}
+                  />
+                ))}
+              </ol>
+              <span className="whitespace-nowrap">
+                ×{stake.multiplier} · {stake.maxPoints} pts
+              </span>
+            </div>
+            <p className="px-1 font-sans text-base leading-snug text-cream sm:text-[17px]">
+              {questionText}
             </p>
           </div>
         </div>
-        <article className="border-[3px] border-gold bg-pitch p-4 text-cream block-shadow">
-          <p className="mb-1 font-display text-sm tracking-wider text-gold">RELATO</p>
-          <p className="font-sans text-lg leading-snug sm:text-xl">{questionText}</p>
-        </article>
       </header>
 
       <div className="relative flex-1">
@@ -83,8 +103,8 @@ export function PlayHud({
         )}
       </div>
 
-      <footer className="pointer-events-auto mx-auto w-full max-w-lg p-3 pb-5 sm:p-4">
-        <div className="space-y-3 border-[3px] border-gold bg-pitch p-3 block-shadow">
+      <footer className="pointer-events-auto mx-auto w-full max-w-lg p-2 pb-4 sm:p-3 sm:pb-5">
+        <div className="space-y-2 border-[3px] border-gold bg-pitch/95 p-2.5 block-shadow">
           {result ? (
             <>
               <RevealCard

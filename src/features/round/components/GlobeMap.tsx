@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  type ExpressionSpecification,
   GeoJSONSource,
   LngLatBounds,
   Map as MapLibreMap,
@@ -9,6 +10,7 @@ import {
   setWorkerUrl,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { COUNTRY_LABELS_GEOJSON } from "@/features/round/data/countryLabels";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
@@ -85,7 +87,7 @@ function makePin(kind: "guess" | "answer") {
       : "h-5 w-5 border-[3px] border-gold bg-chip-green block-shadow";
   const label = document.createElement("span");
   label.className =
-    "mt-1 whitespace-nowrap border-[2px] border-night bg-pitch px-1.5 py-0.5 font-display text-sm leading-none text-gold";
+    "mt-1 whitespace-nowrap border-[2px] border-night bg-pitch px-1.5 py-0.5 font-hud text-[11px] font-bold leading-none tracking-wider text-gold";
   label.textContent = kind === "guess" ? "TU TOQUE" : "AQUÍ";
   wrap.append(pin, label);
   return wrap;
@@ -218,20 +220,79 @@ function addAdmin1Borders(map: MapLibreMap) {
   });
 }
 
-function hideCityLabels(map: MapLibreMap) {
+function hideBaseLabels(map: MapLibreMap) {
   const layers = map.getStyle().layers ?? [];
   for (const layer of layers) {
-    if (layer.type !== "symbol") continue;
-    const id = layer.id.toLowerCase();
-    const keepCountry = id.includes("country") || id.includes("continent");
-    if (!keepCountry) {
+    if (layer.type === "symbol") {
       map.setLayoutProperty(layer.id, "visibility", "none");
     }
   }
 }
 
+function addCountryLabels(map: MapLibreMap) {
+  if (map.getSource("country-labels")) return;
+
+  map.addSource("country-labels", { type: "geojson", data: COUNTRY_LABELS_GEOJSON });
+
+  const code: ExpressionSpecification = ["get", "code"];
+  const nameWithCode: ExpressionSpecification = [
+    "format",
+    ["get", "name"],
+    {},
+    "\n",
+    {},
+    code,
+    { "font-scale": 0.85 },
+  ];
+
+  map.addLayer({
+    id: "country-labels",
+    type: "symbol",
+    source: "country-labels",
+    layout: {
+      "text-field": [
+        "step",
+        ["zoom"],
+        ["case", ["get", "small"], ["format", code, {}], nameWithCode],
+        4,
+        nameWithCode,
+      ],
+      "text-font": ["Open Sans Semibold"],
+      "text-size": ["interpolate", ["linear"], ["zoom"], 1.5, 11, 3, 13, 6, 16],
+      "text-line-height": 1.05,
+      "text-padding": 1,
+      "text-variable-anchor": ["center", "top", "bottom", "left", "right"],
+      "text-radial-offset": 0.4,
+      "symbol-sort-key": ["case", ["get", "small"], 1, 0],
+    },
+    paint: {
+      "text-color": "#1c1410",
+      "text-halo-color": "#ffffff",
+      "text-halo-width": 1.8,
+    },
+  });
+}
+
+const GLOBE_FILL = 0.47;
+const DEFAULT_ZOOM = 2.15;
+
+/**
+ * Zoom con el que el globo ocupa casi todo el lado corto del contenedor.
+ * Mide el radio en pantalla proyectando un punto a 30° del centro (distancia = R·sen 30°).
+ */
+function fittedGlobeZoom(map: MapLibreMap): number {
+  const canvas = map.getCanvas();
+  const target = Math.min(canvas.clientWidth, canvas.clientHeight) * GLOBE_FILL;
+  const center = map.getCenter();
+  const from = map.project(center);
+  const to = map.project([center.lng, center.lat + 30]);
+  const radius = Math.hypot(to.x - from.x, to.y - from.y) / Math.sin(Math.PI / 6);
+  if (!target || !radius || !Number.isFinite(radius)) return map.getZoom();
+  return map.getZoom() + Math.log2(target / radius);
+}
+
 export default function GlobeMap({
-  className = "",
+  className = "relative h-full w-full",
   allowGuess = false,
   resetKey = 0,
   reveal = null,
@@ -243,6 +304,7 @@ export default function GlobeMap({
   const answerMarkerRef = useRef<Marker | null>(null);
   const allowGuessRef = useRef(allowGuess);
   const onGuessRef = useRef(onGuess);
+  const homeZoomRef = useRef(DEFAULT_ZOOM);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -259,7 +321,7 @@ export default function GlobeMap({
     if (!map) return;
     clearRevealLine(map);
     if (resetKey === 0) return;
-    map.flyTo({ center: LATAM_CENTER, zoom: 2.15, duration: 700 });
+    map.flyTo({ center: LATAM_CENTER, zoom: homeZoomRef.current, duration: 700 });
   }, [resetKey]);
 
   useEffect(() => {
@@ -301,7 +363,7 @@ export default function GlobeMap({
       container,
       style: STYLE_URL,
       center: LATAM_CENTER,
-      zoom: 2.15,
+      zoom: DEFAULT_ZOOM,
       attributionControl: { compact: true },
       canvasContextAttributes: { antialias: true },
     });
@@ -310,9 +372,12 @@ export default function GlobeMap({
 
     map.on("style.load", () => {
       map.setProjection({ type: "globe" });
-      hideCityLabels(map);
+      hideBaseLabels(map);
       addAdmin1Borders(map);
+      addCountryLabels(map);
       map.resize();
+      homeZoomRef.current = fittedGlobeZoom(map);
+      map.jumpTo({ zoom: homeZoomRef.current });
       setReady(true);
     });
 
@@ -342,10 +407,10 @@ export default function GlobeMap({
   }, []);
 
   return (
-    <div className={`relative overflow-hidden bg-night ${className}`}>
+    <div className={`overflow-hidden bg-night ${className}`}>
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
       {!ready && (
-        <p className="absolute inset-0 z-10 flex items-center justify-center font-display text-gold">
+        <p className="absolute inset-0 z-10 flex items-center justify-center font-hud text-sm font-bold tracking-widest text-gold">
           Cargando mapa…
         </p>
       )}
