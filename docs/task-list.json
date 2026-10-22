@@ -1,0 +1,373 @@
+{
+  "project": "geolatino",
+  "updated": "2026-10-21",
+  "docs": {
+    "login_ranking": "docs/planing.md",
+    "questions": "docs/preguntas.md"
+  },
+  "status_values": ["done", "in_progress", "pending", "blocked"],
+  "owner_values": ["vos", "claude", "a_definir"],
+  "decisions": [
+    {
+      "id": "D1",
+      "question": "¿Qué modelo de Gemini va como generador y cuál como revisor? ¿El revisor es de otro proveedor?",
+      "phase": "7",
+      "status": "pending"
+    },
+    {
+      "id": "D2",
+      "question": "¿Plan gratis o pago de Gemini? Revisar límites y uso de datos vigentes en Google AI Studio.",
+      "phase": "7",
+      "status": "pending"
+    },
+    {
+      "id": "D3",
+      "question": "¿Qué significa \"latinos\": un español latinoamericano neutro aparte del rioplatense actual, o un solo español?",
+      "phase": "8",
+      "status": "pending"
+    },
+    {
+      "id": "D4",
+      "question": "Nombre público en el ranking: ¿primer nombre de Google (actual) o apodo elegido por el jugador?",
+      "phase": "login",
+      "status": "pending"
+    },
+    {
+      "id": "D5",
+      "question": "docs/plan-preguntas.md quedó reemplazado por docs/preguntas.md. ¿Se borra?",
+      "phase": "docs",
+      "status": "pending"
+    }
+  ],
+  "phases": [
+    {
+      "id": "login",
+      "title": "Login con Google, jugadas guardadas y ranking diario",
+      "doc": "docs/planing.md",
+      "tasks": [
+        {
+          "id": "L1",
+          "title": "Esquema de Supabase: players, plays, daily_ranking e índice",
+          "files": ["supabase/migrations/0001_init.sql", "supabase/migrations/0002_plays_round_date_index.sql"],
+          "owner": "claude",
+          "status": "done",
+          "verify": "Las migraciones están en el repo."
+        },
+        {
+          "id": "L2",
+          "title": "Código de login, guardado de jugadas y página de ranking",
+          "files": ["src/proxy.ts", "src/app/auth/", "src/lib/plays.ts", "src/lib/players.ts", "src/app/(marketing)/ranking/page.tsx"],
+          "owner": "claude",
+          "status": "done",
+          "verify": "pnpm build pasa; rutas probadas sin sesión."
+        },
+        {
+          "id": "L3",
+          "title": "Crear el proyecto de Supabase y poner las claves reales en .env",
+          "owner": "vos",
+          "status": "pending",
+          "verify": ".env deja de ser igual a .env.example."
+        },
+        {
+          "id": "L4",
+          "title": "Ejecutar 0001 y 0002 en el SQL Editor de Supabase",
+          "depends_on": ["L3"],
+          "owner": "vos",
+          "status": "pending",
+          "verify": "select * from daily_ranking responde sin error."
+        },
+        {
+          "id": "L5",
+          "title": "Credenciales OAuth de Google y proveedor Google activado en Supabase",
+          "depends_on": ["L3"],
+          "owner": "vos",
+          "status": "pending",
+          "verify": "Entrar con Google crea la fila en players."
+        },
+        {
+          "id": "L6",
+          "title": "Probar el flujo completo: login, ronda jugada, ranking",
+          "depends_on": ["L4", "L5"],
+          "owner": "a_definir",
+          "status": "blocked",
+          "verify": "La jugada aparece en /ranking con pnpm build && pnpm start."
+        }
+      ]
+    },
+    {
+      "id": "0",
+      "title": "/jugar dinámica",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "P0",
+          "title": "await connection() en /jugar para que la ronda use la fecha del pedido",
+          "files": ["src/app/(play)/jugar/page.tsx"],
+          "owner": "claude",
+          "status": "in_progress",
+          "verify": "pnpm build muestra ƒ /jugar. Falta el commit."
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "title": "Preguntas en Supabase",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "Q1.1",
+          "title": "Migración de la tabla questions",
+          "files": ["supabase/migrations/0003_questions.sql"],
+          "depends_on": ["L3"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q1.2",
+          "title": "Seed desde questions.json con los ids de Wikidata corregidos",
+          "files": ["scripts/seed-questions.mjs"],
+          "depends_on": ["Q1.1"],
+          "owner": "a_definir",
+          "status": "pending",
+          "notes": "Ids correctos: Q499855, Q155174, Q320454, Q498245, Q179027."
+        },
+        {
+          "id": "Q1.3",
+          "title": "Clave foránea de plays.question_id a questions.id",
+          "files": ["supabase/migrations/0004_plays_question_fk.sql"],
+          "depends_on": ["Q1.2"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q1.4",
+          "title": "questions.ts lee de Supabase, sin el fallback bank.slice(0, 5)",
+          "files": ["src/lib/questions.ts", "src/app/api/ronda/route.ts", "src/app/api/jugada/route.ts", "src/app/(play)/jugar/page.tsx"],
+          "depends_on": ["Q1.2"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q1.5",
+          "title": "Borrar src/data/questions.json",
+          "depends_on": ["Q1.4"],
+          "owner": "a_definir",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Lote de candidatos desde Wikidata",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "Q2.1",
+          "title": "Tabla stadium_candidates",
+          "depends_on": ["Q1.1"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q2.2",
+          "title": "import-wikidata.mjs con subclases, orden por sitelinks y User-Agent propio",
+          "files": ["scripts/import-wikidata.mjs"],
+          "depends_on": ["Q2.1"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q2.3",
+          "title": "Workflow de GitHub Actions cada 2 semanas",
+          "depends_on": ["Q2.2"],
+          "owner": "a_definir",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Job diario: generador, chequeos y revisor",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "Q3.1",
+          "title": "Interfaces QuestionGenerator y QuestionReviewer, JSON schema y validación con zod",
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q3.2",
+          "title": "Chequeos automáticos: coordenada en el país, nombre ausente, duplicados, dificultad variada",
+          "depends_on": ["Q3.1"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q3.3",
+          "title": "daily-questions.mjs y workflow programado, con fallback D-1",
+          "files": ["scripts/daily-questions.mjs"],
+          "depends_on": ["Q2.2", "Q3.2", "Q7.1"],
+          "owner": "a_definir",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "title": "Bandeja de aprobación",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "Q4.1",
+          "title": "Página de admin protegida por ADMIN_EMAILS, con pin en el mapa, facts y review",
+          "depends_on": ["Q1.4", "Q7.2"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q4.2",
+          "title": "Reserva de rondas y avisos (menos de 7 días aprobados, menos de 10 rondas de reserva)",
+          "depends_on": ["Q4.1"],
+          "owner": "a_definir",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "title": "Archivo premium",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "Q5.1",
+          "title": "plays.mode (daily o archive) y endpoint de rondas pasadas para premium",
+          "depends_on": ["Q1.4"],
+          "owner": "a_definir",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "title": "Más contenido",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "Q6.1",
+          "title": "Columna category y básquet",
+          "depends_on": ["Q3.3"],
+          "owner": "a_definir",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "title": "Generación con Gemini",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "Q7.1",
+          "title": "Adaptador de Gemini para generador y revisor, con salida estructurada",
+          "depends_on": ["Q3.1", "D1", "D2"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q7.2",
+          "title": "Columnas facts, review y generated_by en questions",
+          "depends_on": ["Q1.1"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q7.3",
+          "title": "Recolección de hechos: Wikidata + resumen de Wikipedia en el idioma del país + chequeo con OpenStreetMap",
+          "depends_on": ["Q2.2"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q7.4",
+          "title": "Medir el uso de tokens y el costo real la primera semana",
+          "depends_on": ["Q3.3"],
+          "owner": "vos",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "title": "Idiomas",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "Q8.1",
+          "title": "Mover las páginas a src/app/[lang]/ y el root layout con <html lang>",
+          "depends_on": ["D3"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q8.2",
+          "title": "Diccionarios es, en y pt-BR con getDictionary() y next/root-params",
+          "files": ["src/i18n/dictionaries/"],
+          "depends_on": ["Q8.1"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q8.3",
+          "title": "proxy.ts: redirección por Accept-Language o cookie NEXT_LOCALE, sin romper el refresco de sesión",
+          "files": ["src/proxy.ts"],
+          "depends_on": ["Q8.1"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q8.4",
+          "title": "Pasar a diccionario los textos fijos: menú, puntaje, compartir, imagen OG, metadata, formato de fecha",
+          "depends_on": ["Q8.2"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q8.5",
+          "title": "players.locale",
+          "depends_on": ["L4"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q8.6",
+          "title": "Tabla question_translations",
+          "depends_on": ["Q1.1"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q8.7",
+          "title": "Traductor y revisión de traducciones en el job diario",
+          "depends_on": ["Q3.3", "Q8.6"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q8.8",
+          "title": "/api/ronda y /jugar por idioma, con español si falta la traducción aprobada",
+          "depends_on": ["Q1.4", "Q8.6"],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q8.9",
+          "title": "Filtro por idioma en la bandeja de aprobación",
+          "depends_on": ["Q4.1", "Q8.6"],
+          "owner": "a_definir",
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}
