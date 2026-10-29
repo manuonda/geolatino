@@ -1,12 +1,22 @@
 {
   "project": "geolatino",
-  "updated": "2026-10-21",
+  "updated": "2026-10-28",
   "docs": {
     "login_ranking": "docs/planing.md",
-    "questions": "docs/preguntas.md"
+    "questions": "docs/preguntas.md",
+    "profile": "docs/perfil.md"
   },
-  "status_values": ["done", "in_progress", "pending", "blocked"],
-  "owner_values": ["vos", "claude", "a_definir"],
+  "status_values": [
+    "done",
+    "in_progress",
+    "pending",
+    "blocked"
+  ],
+  "owner_values": [
+    "vos",
+    "claude",
+    "a_definir"
+  ],
   "decisions": [
     {
       "id": "D1",
@@ -36,6 +46,12 @@
       "id": "D5",
       "question": "docs/plan-preguntas.md quedó reemplazado por docs/preguntas.md. ¿Se borra?",
       "phase": "docs",
+      "status": "pending"
+    },
+    {
+      "id": "D6",
+      "question": "¿El perfil es solo privado (/perfil) o también público (/jugador/[id]) para que otros vean tus estadísticas?",
+      "phase": "9",
       "status": "pending"
     }
   ],
@@ -356,65 +372,175 @@
         {
           "id": "Q8.1",
           "title": "Mover las páginas a src/app/[lang]/ y el root layout con <html lang>",
-          "depends_on": ["D3"],
+          "depends_on": [
+            "D3"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q8.2",
           "title": "Diccionarios es, en y pt-BR con getDictionary() y next/root-params",
-          "files": ["src/i18n/dictionaries/"],
-          "depends_on": ["Q8.1"],
+          "files": [
+            "src/i18n/dictionaries/"
+          ],
+          "depends_on": [
+            "Q8.1"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q8.3",
           "title": "proxy.ts: redirección por Accept-Language o cookie NEXT_LOCALE, sin romper el refresco de sesión",
-          "files": ["src/proxy.ts"],
-          "depends_on": ["Q8.1"],
+          "files": [
+            "src/proxy.ts"
+          ],
+          "depends_on": [
+            "Q8.1"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q8.4",
           "title": "Pasar a diccionario los textos fijos: menú, puntaje, compartir, imagen OG, metadata, formato de fecha",
-          "depends_on": ["Q8.2"],
+          "depends_on": [
+            "Q8.2"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q8.5",
           "title": "players.locale",
-          "depends_on": ["L4"],
+          "depends_on": [
+            "L4"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q8.6",
           "title": "Tabla question_translations",
-          "depends_on": ["Q1.1"],
+          "depends_on": [
+            "Q1.1"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q8.7",
           "title": "Traductor y revisión de traducciones en el job diario",
-          "depends_on": ["Q3.3", "Q8.6"],
+          "depends_on": [
+            "Q3.3",
+            "Q8.6"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q8.8",
           "title": "/api/ronda y /jugar por idioma, con español si falta la traducción aprobada",
-          "depends_on": ["Q1.4", "Q8.6"],
+          "depends_on": [
+            "Q1.4",
+            "Q8.6"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q8.9",
-          "title": "Filtro por idioma en la bandeja de aprobación",
-          "depends_on": ["Q4.1", "Q8.6"],
+          "title": "Filtro por idioma en el panel de admin",
+          "depends_on": [
+            "A2",
+            "Q8.6"
+          ],
+          "owner": "a_definir",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "title": "Perfil y estadísticas",
+      "doc": "docs/perfil.md",
+      "tasks": [
+        {
+          "id": "S1",
+          "title": "Vistas player_stats (totales) y player_streaks (rachas con la técnica de islas)",
+          "files": [
+            "supabase/migrations/NNNN_player_stats.sql"
+          ],
+          "depends_on": [
+            "L4"
+          ],
+          "owner": "a_definir",
+          "status": "pending",
+          "verify": "La racha da 3 para un jugador con jugadas el 1, 2 y 3, y 1 si el 2 falta."
+        },
+        {
+          "id": "S2",
+          "title": "getPlayerStats(playerId) en src/lib/stats.ts",
+          "files": [
+            "src/lib/stats.ts"
+          ],
+          "depends_on": [
+            "S1"
+          ],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "S3",
+          "title": "Página /perfil: redirige al login sin sesión y muestra totales, rachas y mejor posición",
+          "files": [
+            "src/app/(marketing)/perfil/page.tsx"
+          ],
+          "depends_on": [
+            "S2"
+          ],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "S4",
+          "title": "\"Mis estadísticas\" del menú apunta a /perfil",
+          "files": [
+            "src/shared/components/GameMenu.tsx"
+          ],
+          "depends_on": [
+            "S3"
+          ],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "S5",
+          "title": "Historial de los últimos 30 días como gráfico de barras",
+          "depends_on": [
+            "S3"
+          ],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "S6",
+          "title": "Aciertos por país, uniendo plays con questions",
+          "depends_on": [
+            "S2",
+            "Q1.3"
+          ],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "S7",
+          "title": "Perfil público /jugador/[id]",
+          "depends_on": [
+            "S3",
+            "D6"
+          ],
           "owner": "a_definir",
           "status": "pending"
         }
