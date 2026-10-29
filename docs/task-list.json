@@ -219,22 +219,43 @@
         {
           "id": "Q2.1",
           "title": "Tabla stadium_candidates",
-          "depends_on": ["Q1.1"],
+          "depends_on": [
+            "Q1.1"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q2.2",
           "title": "import-wikidata.mjs con subclases, orden por sitelinks y User-Agent propio",
-          "files": ["scripts/import-wikidata.mjs"],
-          "depends_on": ["Q2.1"],
+          "files": [
+            "scripts/import-wikidata.mjs"
+          ],
+          "depends_on": [
+            "Q2.1"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q2.3",
           "title": "Workflow de GitHub Actions cada 2 semanas",
-          "depends_on": ["Q2.2"],
+          "depends_on": [
+            "Q2.2"
+          ],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "Q2.4",
+          "title": "Crear pregunta desde un candidato: el formulario de alta llega con nombre, país y coordenadas de Wikidata",
+          "files": [
+            "src/app/admin/candidatos/page.tsx"
+          ],
+          "depends_on": [
+            "Q2.2",
+            "A3"
+          ],
           "owner": "a_definir",
           "status": "pending"
         }
@@ -254,36 +275,125 @@
         {
           "id": "Q3.2",
           "title": "Chequeos automáticos: coordenada en el país, nombre ausente, duplicados, dificultad variada",
-          "depends_on": ["Q3.1"],
+          "depends_on": [
+            "Q3.1"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q3.3",
           "title": "daily-questions.mjs y workflow programado, con fallback D-1",
-          "files": ["scripts/daily-questions.mjs"],
-          "depends_on": ["Q2.2", "Q3.2", "Q7.1"],
+          "files": [
+            "scripts/daily-questions.mjs"
+          ],
+          "depends_on": [
+            "Q2.2",
+            "Q3.2",
+            "Q7.1"
+          ],
           "owner": "a_definir",
           "status": "pending"
         }
       ]
     },
     {
+      "id": "4a",
+      "title": "Admin: ABM de preguntas y calendario",
+      "doc": "docs/preguntas.md",
+      "tasks": [
+        {
+          "id": "A1",
+          "title": "requireAdmin() con ADMIN_EMAILS y layout de /admin que devuelve notFound() si no sos admin",
+          "files": [
+            "src/lib/admin.ts",
+            "src/app/admin/layout.tsx",
+            ".env.example"
+          ],
+          "depends_on": [
+            "L5",
+            "Q1.1"
+          ],
+          "owner": "a_definir",
+          "status": "pending",
+          "verify": "Con otra cuenta de Google, /admin da 404."
+        },
+        {
+          "id": "A2",
+          "title": "Lista /admin/preguntas con filtros por estado, fecha y país",
+          "files": [
+            "src/app/admin/preguntas/page.tsx",
+            "src/lib/questions-admin.ts"
+          ],
+          "depends_on": [
+            "A1"
+          ],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "A3",
+          "title": "Alta y edición con pin elegido en el mapa; Server Actions con zod y requireAdmin() en cada una",
+          "files": [
+            "src/app/admin/preguntas/nueva/page.tsx",
+            "src/app/admin/preguntas/[id]/page.tsx",
+            "src/app/admin/preguntas/actions.ts"
+          ],
+          "depends_on": [
+            "A2"
+          ],
+          "owner": "a_definir",
+          "status": "pending",
+          "notes": "Una pregunta cuya fecha ya llegó no se edita: solo el texto de la historia."
+        },
+        {
+          "id": "A4",
+          "title": "Aprobar o rechazar con motivo: columnas reviewed_by, reviewed_at y reject_reason",
+          "files": [
+            "supabase/migrations/NNNN_questions_review.sql"
+          ],
+          "depends_on": [
+            "A3"
+          ],
+          "owner": "a_definir",
+          "status": "pending"
+        },
+        {
+          "id": "A5",
+          "title": "/admin/calendario: próximos 14 días con 5 lugares, asignar preguntas aprobadas y aviso de menos de 7 días completos",
+          "files": [
+            "src/app/admin/calendario/page.tsx"
+          ],
+          "depends_on": [
+            "A4"
+          ],
+          "owner": "a_definir",
+          "status": "pending",
+          "verify": "Un día con 5 aprobadas se ve verde y /jugar lo muestra en esa fecha."
+        }
+      ]
+    },
+    {
       "id": "4",
-      "title": "Bandeja de aprobación",
+      "title": "Bandeja de preguntas de la IA",
       "doc": "docs/preguntas.md",
       "tasks": [
         {
           "id": "Q4.1",
-          "title": "Página de admin protegida por ADMIN_EMAILS, con pin en el mapa, facts y review",
-          "depends_on": ["Q1.4", "Q7.2"],
+          "title": "Mostrar facts y la nota del revisor de IA en la ficha de cada pregunta ai_reviewed",
+          "depends_on": [
+            "A4",
+            "Q7.2"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q4.2",
-          "title": "Reserva de rondas y avisos (menos de 7 días aprobados, menos de 10 rondas de reserva)",
-          "depends_on": ["Q4.1"],
+          "title": "Reserva de rondas (is_reserve) y aviso de menos de 10 rondas de reserva",
+          "depends_on": [
+            "A5"
+          ],
           "owner": "a_definir",
           "status": "pending"
         }
@@ -297,7 +407,9 @@
         {
           "id": "Q5.1",
           "title": "plays.mode (daily o archive) y endpoint de rondas pasadas para premium",
-          "depends_on": ["Q1.4"],
+          "depends_on": [
+            "Q1.4"
+          ],
           "owner": "a_definir",
           "status": "pending"
         }

@@ -4,11 +4,11 @@ Plan para pasar de 5 preguntas en `src/data/questions.json` a una ronda nueva po
 
 ## Estado
 
-Diseño cerrado para las fases 1 a 6. Las fases 7 (generación con Gemini) y 8 (idiomas) se agregaron el 2026-10-21 y están para revisar. El seguimiento de tareas está en `docs/task-list.json`.
+Diseño cerrado para las fases 1 a 6. Las fases 7 (generación con Gemini) y 8 (idiomas) se agregaron el 2026-10-21 y la fase 4a (ABM de admin) el 2026-10-28; están para revisar. El seguimiento de tareas está en `docs/task-list.json`.
 
 Hecho:
 
-- `/jugar` se genera en cada pedido (`await connection()` en `src/app/(play)/jugar/page.tsx`). Antes se generaba al compilar y mostraba la ronda del día del build. Falta el commit.
+- `/jugar` se genera en cada pedido (`await connection()` en `src/app/(play)/jugar/page.tsx`). Antes se generaba al compilar y mostraba la ronda del día del build. Commit `bda07ba`.
 
 Hoy `getPublicRound` en `src/lib/questions.ts` devuelve `bank.slice(0, 5)` cuando no hay preguntas para la fecha. Las 5 preguntas existentes tienen fecha 2026-10-05, así que desde ese día todos juegan la misma ronda.
 
@@ -100,14 +100,32 @@ Un workflow de GitHub Actions con `schedule` (en UTC) ejecuta `scripts/daily-que
 
 Secretos del workflow: la URL de Supabase, la secret key de Supabase y la API key de Anthropic. La API de Claude se paga por uso y es aparte de la suscripción a Claude Code.
 
-### Fase 4: bandeja de aprobación
+### Fase 4a: ABM de preguntas y calendario
 
-- Una página de admin protegida por la variable de entorno `ADMIN_EMAILS`.
-- Muestra cada pregunta `ai_reviewed` con el pin en el mapa y la nota del revisor. La persona aprueba, edita o rechaza.
+Va antes de la IA: permite cargar y validar preguntas a mano en cuanto exista la tabla `questions` (fase 1). Cuando llegue Gemini, sus preguntas `ai_reviewed` entran a esta misma bandeja.
+
+- `src/lib/admin.ts`: `requireAdmin()` lee la sesión y compara el email con `ADMIN_EMAILS` (lista separada por comas). Si no coincide, `notFound()`.
+- `src/app/admin/layout.tsx` llama a `requireAdmin()`. **Cada Server Action también la llama**: una action se puede invocar sin pasar por el layout.
+- Rutas:
+  - `/admin/preguntas`: lista con filtros por estado, fecha y país.
+  - `/admin/preguntas/nueva`: alta con acertijo, 3 pistas, historia, dificultad y el pin elegido con un clic en el mapa.
+  - `/admin/preguntas/[id]`: editar, aprobar o rechazar con motivo.
+  - `/admin/calendario`: los próximos 14 días con sus 5 lugares. Verde: 5 aprobadas. Amarillo: incompleto o con preguntas sin aprobar. Rojo: vacío. Desde ahí se asignan preguntas aprobadas a un día y lugar.
+- `src/app/admin/preguntas/actions.ts`: crear, editar, aprobar, rechazar y asignar fecha, con validación zod. Usan el cliente admin de Supabase.
+- Migración: columnas `reviewed_by`, `reviewed_at` y `reject_reason` en `questions`.
+- Reglas:
+  - Una pregunta cuya `round_date` ya llegó no se edita, salvo el texto de `story`: hay jugadas guardadas con su puntaje.
+  - Solo se juegan preguntas `approved`. El `unique (round_date, position)` impide dos preguntas en el mismo lugar.
+  - Aviso en el calendario cuando quedan menos de 7 días completos.
+- Con la fase 2, `/admin/candidatos` lista los estadios importados de Wikidata y el botón "crear pregunta" abre el alta con nombre, país y coordenadas ya cargados.
+
+### Fase 4: bandeja de la IA
+
+Se suma a la fase 4a cuando existan las fases 3 y 7.
+
+- La ficha de cada pregunta `ai_reviewed` muestra los `facts` usados y la nota del revisor.
 - Permite marcar rondas aprobadas como reserva (`is_reserve`, sin fecha).
-- Avisos:
-  - quedan menos de 7 días aprobados;
-  - la reserva tiene menos de 10 rondas.
+- Aviso cuando la reserva tiene menos de 10 rondas.
 
 ### Fase 5: archivo premium
 
