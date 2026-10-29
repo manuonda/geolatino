@@ -48,7 +48,10 @@
         {
           "id": "L1",
           "title": "Esquema de Supabase: players, plays, daily_ranking e índice",
-          "files": ["supabase/migrations/0001_init.sql", "supabase/migrations/0002_plays_round_date_index.sql"],
+          "files": [
+            "supabase/migrations/0001_init.sql",
+            "supabase/migrations/0002_plays_round_date_index.sql"
+          ],
           "owner": "claude",
           "status": "done",
           "verify": "Las migraciones están en el repo."
@@ -56,7 +59,13 @@
         {
           "id": "L2",
           "title": "Código de login, guardado de jugadas y página de ranking",
-          "files": ["src/proxy.ts", "src/app/auth/", "src/lib/plays.ts", "src/lib/players.ts", "src/app/(marketing)/ranking/page.tsx"],
+          "files": [
+            "src/proxy.ts",
+            "src/app/auth/",
+            "src/lib/plays.ts",
+            "src/lib/players.ts",
+            "src/app/(marketing)/ranking/page.tsx"
+          ],
           "owner": "claude",
           "status": "done",
           "verify": "pnpm build pasa; rutas probadas sin sesión."
@@ -71,7 +80,9 @@
         {
           "id": "L4",
           "title": "Ejecutar 0001 y 0002 en el SQL Editor de Supabase",
-          "depends_on": ["L3"],
+          "depends_on": [
+            "L3"
+          ],
           "owner": "vos",
           "status": "pending",
           "verify": "select * from daily_ranking responde sin error."
@@ -79,7 +90,9 @@
         {
           "id": "L5",
           "title": "Credenciales OAuth de Google y proveedor Google activado en Supabase",
-          "depends_on": ["L3"],
+          "depends_on": [
+            "L3"
+          ],
           "owner": "vos",
           "status": "pending",
           "verify": "Entrar con Google crea la fila en players."
@@ -87,7 +100,10 @@
         {
           "id": "L6",
           "title": "Probar el flujo completo: login, ronda jugada, ranking",
-          "depends_on": ["L4", "L5"],
+          "depends_on": [
+            "L4",
+            "L5"
+          ],
           "owner": "a_definir",
           "status": "blocked",
           "verify": "La jugada aparece en /ranking con pnpm build && pnpm start."
@@ -117,16 +133,24 @@
         {
           "id": "Q1.1",
           "title": "Migración de la tabla questions",
-          "files": ["supabase/migrations/0003_questions.sql"],
-          "depends_on": ["L3"],
+          "files": [
+            "supabase/migrations/0003_questions.sql"
+          ],
+          "depends_on": [
+            "L3"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q1.2",
           "title": "Seed desde questions.json con los ids de Wikidata corregidos",
-          "files": ["scripts/seed-questions.mjs"],
-          "depends_on": ["Q1.1"],
+          "files": [
+            "scripts/seed-questions.mjs"
+          ],
+          "depends_on": [
+            "Q1.1"
+          ],
           "owner": "a_definir",
           "status": "pending",
           "notes": "Ids correctos: Q499855, Q155174, Q320454, Q498245, Q179027."
@@ -134,23 +158,36 @@
         {
           "id": "Q1.3",
           "title": "Clave foránea de plays.question_id a questions.id",
-          "files": ["supabase/migrations/0004_plays_question_fk.sql"],
-          "depends_on": ["Q1.2"],
+          "files": [
+            "supabase/migrations/0004_plays_question_fk.sql"
+          ],
+          "depends_on": [
+            "Q1.2"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q1.4",
           "title": "questions.ts lee de Supabase, sin el fallback bank.slice(0, 5)",
-          "files": ["src/lib/questions.ts", "src/app/api/ronda/route.ts", "src/app/api/jugada/route.ts", "src/app/(play)/jugar/page.tsx"],
-          "depends_on": ["Q1.2"],
+          "files": [
+            "src/lib/questions.ts",
+            "src/app/api/ronda/route.ts",
+            "src/app/api/jugada/route.ts",
+            "src/app/(play)/jugar/page.tsx"
+          ],
+          "depends_on": [
+            "Q1.2"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q1.5",
           "title": "Borrar src/data/questions.json",
-          "depends_on": ["Q1.4"],
+          "depends_on": [
+            "Q1.4"
+          ],
           "owner": "a_definir",
           "status": "pending"
         }
@@ -256,7 +293,9 @@
         {
           "id": "Q6.1",
           "title": "Columna category y básquet",
-          "depends_on": ["Q3.3"],
+          "depends_on": [
+            "Q3.3"
+          ],
           "owner": "a_definir",
           "status": "pending"
         }
@@ -270,28 +309,38 @@
         {
           "id": "Q7.1",
           "title": "Adaptador de Gemini para generador y revisor, con salida estructurada",
-          "depends_on": ["Q3.1", "D1", "D2"],
+          "depends_on": [
+            "Q3.1",
+            "D1",
+            "D2"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q7.2",
           "title": "Columnas facts, review y generated_by en questions",
-          "depends_on": ["Q1.1"],
+          "depends_on": [
+            "Q1.1"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q7.3",
           "title": "Recolección de hechos: Wikidata + resumen de Wikipedia en el idioma del país + chequeo con OpenStreetMap",
-          "depends_on": ["Q2.2"],
+          "depends_on": [
+            "Q2.2"
+          ],
           "owner": "a_definir",
           "status": "pending"
         },
         {
           "id": "Q7.4",
           "title": "Medir el uso de tokens y el costo real la primera semana",
-          "depends_on": ["Q3.3"],
+          "depends_on": [
+            "Q3.3"
+          ],
           "owner": "vos",
           "status": "pending"
         }
