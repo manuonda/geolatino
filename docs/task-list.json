@@ -606,9 +606,9 @@
           "depends_on": [
             "L4"
           ],
-          "owner": "a_definir",
-          "status": "pending",
-          "verify": "La racha da 3 para un jugador con jugadas el 1, 2 y 3, y 1 si el 2 falta."
+          "owner": "claude",
+          "status": "done",
+          "verify": "supabase/migrations/0006_player_stats.sql. Rachas y desempate probados en tests/db/stats.test.ts."
         },
         {
           "id": "S2",
@@ -619,8 +619,9 @@
           "depends_on": [
             "S1"
           ],
-          "owner": "a_definir",
-          "status": "pending"
+          "owner": "claude",
+          "status": "done",
+          "verify": "Probado en tests/db/stats.test.ts."
         },
         {
           "id": "S3",
@@ -631,8 +632,9 @@
           "depends_on": [
             "S2"
           ],
-          "owner": "a_definir",
-          "status": "pending"
+          "owner": "claude",
+          "status": "done",
+          "verify": "Probada en el entorno local con jugadas de ejemplo."
         },
         {
           "id": "S4",
@@ -643,8 +645,8 @@
           "depends_on": [
             "S3"
           ],
-          "owner": "a_definir",
-          "status": "pending"
+          "owner": "claude",
+          "status": "done"
         },
         {
           "id": "S5",
@@ -652,8 +654,9 @@
           "depends_on": [
             "S3"
           ],
-          "owner": "a_definir",
-          "status": "pending"
+          "owner": "claude",
+          "status": "done",
+          "verify": "Gráfico de barras con tabla equivalente."
         },
         {
           "id": "S6",
@@ -662,8 +665,9 @@
             "S2",
             "Q1.3"
           ],
-          "owner": "a_definir",
-          "status": "pending"
+          "owner": "claude",
+          "status": "done",
+          "verify": "Probado en tests/db/stats.test.ts."
         },
         {
           "id": "S7",

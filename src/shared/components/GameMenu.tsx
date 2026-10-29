@@ -28,7 +28,7 @@ const SECTIONS: MenuSection[] = [
     title: "Competir",
     items: [
       { label: "Ranking de hoy", href: "/ranking" },
-      { label: "Mis estadísticas", badge: "pronto" },
+      { label: "Mis estadísticas", href: "/perfil" },
       { label: "Grupos con amigos", badge: "pronto" },
     ],
   },

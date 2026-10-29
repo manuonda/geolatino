@@ -4,7 +4,9 @@ Plan para que un jugador con sesión vea sus estadísticas. Es la fase 9 de `doc
 
 ## Estado
 
-Para revisar. Depende de que las migraciones 0001 y 0002 estén corridas en Supabase (tarea L4). No necesita la tabla `questions`, salvo las estadísticas por país.
+Hecho en código (tareas S1 a S6). Falta correr `0006_player_stats.sql` en Supabase. El perfil público (S7) espera la decisión D6.
+
+`player_rounds` sale de `daily_ranking`, y `player_stats` junta los totales de `plays` con los de `player_rounds`. Un acierto es una respuesta con `raw_score >= 80`, el chip verde.
 
 ## Alcance
 
