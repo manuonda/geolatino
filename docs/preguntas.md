@@ -9,8 +9,9 @@ Diseño cerrado para las fases 1 a 6. Las fases 7 (generación con Gemini) y 8 (
 Hecho:
 
 - `/jugar` se genera en cada pedido (`await connection()` en `src/app/(play)/jugar/page.tsx`). Antes se generaba al compilar y mostraba la ronda del día del build. Commit `bda07ba`.
+- Fase 1 en código: las preguntas se leen de la tabla `questions`, sin el fallback `bank.slice(0, 5)`. Un día sin preguntas aprobadas muestra "No hay pregunta para hoy". Falta correr 0003, el seed y 0004 en el Supabase real.
 
-Hoy `getPublicRound` en `src/lib/questions.ts` devuelve `bank.slice(0, 5)` cuando no hay preguntas para la fecha. Las 5 preguntas existentes tienen fecha 2026-10-05, así que desde ese día todos juegan la misma ronda.
+Tests: `pnpm test` (unitarios) y `pnpm test:db` (Postgres + PostgREST en Docker, con todas las migraciones).
 
 ## Reglas del juego
 

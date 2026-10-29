@@ -8,12 +8,12 @@ export default async function JugarPage() {
   // una sola vez al compilar y muestra la ronda de ese día hasta el próximo despliegue.
   await connection();
 
-  const round = getPublicRound(todayInBuenosAires());
+  const round = await getPublicRound(todayInBuenosAires());
 
-  if (round.length === 0) {
+  if (round === null || round.length === 0) {
     return (
       <main className="flex min-h-dvh items-center justify-center bg-night font-display text-gold">
-        No hay pregunta para hoy.
+        {round === null ? "No se pudo cargar la ronda. Probá de nuevo en un rato." : "No hay pregunta para hoy."}
       </main>
     );
   }

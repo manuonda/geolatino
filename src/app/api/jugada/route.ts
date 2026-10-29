@@ -1,7 +1,7 @@
 import { distanceKm } from "@/lib/haversine";
 import { saveFirstPlay } from "@/lib/plays";
 import { signProof } from "@/lib/proof";
-import { findRoundDate, getQuestionById } from "@/lib/questions";
+import { findRoundQuestion } from "@/lib/questions";
 import {
   applyHints,
   applyMultiplier,
@@ -44,11 +44,17 @@ export async function POST(request: Request) {
   }
 
   // Se acepta la ronda de ayer: una ronda empezada a las 23:58 termina después de medianoche.
-  const date = findRoundDate(questionId, [todayInBuenosAires(), yesterdayInBuenosAires()]);
-  const question = date ? getQuestionById(questionId) : undefined;
-  if (!date || !question) {
+  let found;
+  try {
+    found = await findRoundQuestion(questionId, [todayInBuenosAires(), yesterdayInBuenosAires()]);
+  } catch (error) {
+    console.error(error);
+    return Response.json({ error: "No se pudo validar la respuesta" }, { status: 503 });
+  }
+  if (!found) {
     return Response.json({ error: "Pregunta no encontrada" }, { status: 404 });
   }
+  const { date, question } = found;
 
   const hintsUsed = clampHints(body.hintsUsed);
   const km = distanceKm({ lat, lng }, { lat: question.lat, lng: question.lng });

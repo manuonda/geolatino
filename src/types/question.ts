@@ -14,7 +14,6 @@ export type Question = {
   pistas: string[];
   historia: string;
   fuente: string;
-  verificada: boolean;
 };
 
 /** Lo que el navegador puede ver antes del toque: sin coordenadas ni nombre del lugar. */
