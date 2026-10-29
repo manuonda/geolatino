@@ -118,10 +118,12 @@
         {
           "id": "P0",
           "title": "await connection() en /jugar para que la ronda use la fecha del pedido",
-          "files": ["src/app/(play)/jugar/page.tsx"],
+          "files": [
+            "src/app/(play)/jugar/page.tsx"
+          ],
           "owner": "claude",
-          "status": "in_progress",
-          "verify": "pnpm build muestra ƒ /jugar. Falta el commit."
+          "status": "done",
+          "verify": "pnpm build muestra ƒ /jugar. Commit bda07ba."
         }
       ]
     },
