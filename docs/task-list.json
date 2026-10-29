@@ -214,6 +214,16 @@
           "owner": "a_definir",
           "status": "pending",
           "notes": "El JSON queda como fuente del seed hasta que /jugar funcione contra el Supabase real."
+        },
+        {
+          "id": "Q1.6",
+          "title": "Reescribir el acertijo de EST-0005: dice \"el barrio se llama El Campín\" y eso es la respuesta",
+          "depends_on": [
+            "L4"
+          ],
+          "owner": "vos",
+          "status": "pending",
+          "notes": "Lo detectó el aviso de nombre del panel de admin. Se corrige desde /admin antes de asignarla a un día nuevo."
         }
       ]
     },
@@ -320,9 +330,9 @@
             "L5",
             "Q1.1"
           ],
-          "owner": "a_definir",
-          "status": "pending",
-          "verify": "Con otra cuenta de Google, /admin da 404."
+          "owner": "claude",
+          "status": "done",
+          "verify": "Sin sesión o sin email admin, /admin y cada action responden 404 (tests/db/admin-actions.test.ts)."
         },
         {
           "id": "A2",
@@ -334,8 +344,9 @@
           "depends_on": [
             "A1"
           ],
-          "owner": "a_definir",
-          "status": "pending"
+          "owner": "claude",
+          "status": "done",
+          "verify": "Filtros probados en tests/db/questions-admin.test.ts."
         },
         {
           "id": "A3",
@@ -348,9 +359,10 @@
           "depends_on": [
             "A2"
           ],
-          "owner": "a_definir",
-          "status": "pending",
-          "notes": "Una pregunta cuya fecha ya llegó no se edita: solo el texto de la historia."
+          "owner": "claude",
+          "status": "done",
+          "notes": "Una pregunta cuya fecha ya llegó no se edita: solo el texto de la historia.",
+          "verify": "Alta, edición y bloqueo de preguntas jugadas probados en pnpm test:db."
         },
         {
           "id": "A4",
@@ -361,8 +373,9 @@
           "depends_on": [
             "A3"
           ],
-          "owner": "a_definir",
-          "status": "pending"
+          "owner": "claude",
+          "status": "done",
+          "verify": "supabase/migrations/0005_questions_review.sql. Probado en pnpm test:db."
         },
         {
           "id": "A5",
@@ -373,9 +386,9 @@
           "depends_on": [
             "A4"
           ],
-          "owner": "a_definir",
-          "status": "pending",
-          "verify": "Un día con 5 aprobadas se ve verde y /jugar lo muestra en esa fecha."
+          "owner": "claude",
+          "status": "done",
+          "verify": "Calendario probado en tests y en el entorno local (scripts/local-stack.mjs)."
         }
       ]
     },

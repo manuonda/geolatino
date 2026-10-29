@@ -98,3 +98,16 @@ body {
 .maplibregl-ctrl-compass {
   display: none;
 }
+
+/* Campos del panel de admin. */
+.admin-input {
+  border: 3px solid rgb(244 235 208 / 0.3);
+  background: var(--gl-pitch);
+  color: var(--gl-cream);
+  padding: 6px 8px;
+  font-size: 15px;
+}
+.admin-input:focus {
+  outline: none;
+  border-color: var(--gl-gold);
+}

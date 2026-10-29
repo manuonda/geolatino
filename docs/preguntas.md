@@ -11,6 +11,10 @@ Hecho:
 - `/jugar` se genera en cada pedido (`await connection()` en `src/app/(play)/jugar/page.tsx`). Antes se generaba al compilar y mostraba la ronda del día del build. Commit `bda07ba`.
 - Fase 1 en código: las preguntas se leen de la tabla `questions`, sin el fallback `bank.slice(0, 5)`. Un día sin preguntas aprobadas muestra "No hay pregunta para hoy". Falta correr 0003, el seed y 0004 en el Supabase real.
 
+- Fase 4a en código: `/admin/preguntas`, `/admin/preguntas/nueva`, `/admin/preguntas/[id]` y `/admin/calendario`. Falta correr 0005 en Supabase y poner `ADMIN_EMAILS` en `.env`.
+
+Para probar sin Supabase: `node scripts/local-stack.mjs` levanta la base con preguntas de ejemplo y un login de prueba, e imprime cómo arrancar `pnpm dev` y la cookie de sesión.
+
 Tests: `pnpm test` (unitarios) y `pnpm test:db` (Postgres + PostgREST en Docker, con todas las migraciones).
 
 ## Reglas del juego
